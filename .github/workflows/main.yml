@@ -20,6 +20,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '17' # 원하는 Java 버전
+          distribution: 'corretto' # JDK 배포판
 
       - name: Build with Gradle
         run: ./gradlew build # Gradle 빌드 명령어
