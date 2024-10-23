@@ -1,7 +1,10 @@
 name: CI/CD Workflow
 
 on:
-  [push, pull_request]:
+  push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
@@ -20,4 +23,3 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build # Gradle 빌드 명령어
-
