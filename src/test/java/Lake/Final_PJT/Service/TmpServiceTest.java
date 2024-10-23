@@ -16,6 +16,6 @@ class TmpServiceTest {
 	@Test
 	public void testAdd(){
 		int result = tmpService.add(2, 3);
-		assertEquals(4, result, "2 + 3 = 5");
+		assertEquals(5, result, "2 + 3 = 5");
 	}
 }
