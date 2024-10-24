@@ -24,14 +24,23 @@ jobs:
       - name: Build and Test with Gradle
         run: ./gradlew build
 
-      - name: Cache Docker Compose # 있으면 설치 안하도록
+      - name: Cache Docker Compose
         uses: actions/cache@v3
         with:
           path: /usr/local/bin/docker-compose
           key: ${{ runner.os }}-docker-compose-${{ hashFiles('**/Dockerfile') }}
 
-      - name: Install Docker Compose # 도커 컴포즈 설치 캐시에서 없으면
+      - name: Install Docker Compose
         run: sudo apt-get update && sudo apt-get install -y docker-compose
 
-      - name: Build and run Docker containers # test라는 이름의 컴포즈 만든다. f는 경로 설정
-        run: docker-compose -f ./docker/docker-compose.yml -p test up -d --build
+      - name: Build Docker images
+        run: docker-compose -f ./docker/docker-compose.yml build
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Tag Docker image
+        run: docker tag your-image-name:latest your-dockerhub-username/your-image-name:latest
+
+      - name: Push Docker image to Docker Hub
+        run: docker push your-dockerhub-username/your-image-name:latest
