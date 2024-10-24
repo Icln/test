@@ -6,9 +6,6 @@ services:
     container_name: test-db
     environment:
       MYSQL_ROOT_PASSWORD: test
-      MYSQL_DATABASE: test-db
-      MYSQL_USER: KH
-      MYSQL_PASSWORD: 0817
       TZ: Asia/Seoul
     ports:
       - "13333:3306"
@@ -18,13 +15,12 @@ services:
 
   app:
     build:
+      context: ../
       dockerfile: ./docker/Dockerfile
     ports:
       - "8080:8080"
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/test-db
-      SPRING_DATASOURCE_USERNAME: KH
-      SPRING_DATASOURCE_PASSWORD: 0817
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:13333/test-db
 

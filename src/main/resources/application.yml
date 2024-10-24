@@ -1,0 +1,5 @@
+datasource:
+  driver-class-name: com.mysql.cj.jdbc.Driver
+  url: jdbc:mysql//localhost:13333/temp?useUnicode=true&serverTimezone=Asia/Seoul
+  username: root
+  password: test

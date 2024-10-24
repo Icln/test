@@ -17,11 +17,8 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: test
-          MYSQL_DATABASE: test-db
-          MYSQL_USER: KH
-          MYSQL_PASSWORD: 0817
         ports:
-          - 3306:3306
+          - 13333:3306
 
     steps:
       - name: Checkout code
@@ -36,11 +33,17 @@ jobs:
       - name: Build and Test with Gradle
         run: ./gradlew build
 
-      - name: Install Docker Compose
+      - name: Cache Docker Compose # 있으면 설치 안하도록
+        uses: actions/cache@v3
+        with:
+        path: /usr/local/bin/docker-compose
+        key: ${{ runner.os }}-docker-compose-${{ hashFiles('**/Dockerfile') }}
+
+      - name: Install Docker Compose # 도커 컴포즈 설치 캐시에서 없으면
         run: sudo apt-get update && sudo apt-get install -y docker-compose
 
-      - name: Set up Docker Compose
-        run: docker-compose -f ./docker/docker-compose.yml up -d --build
+      - name: Build and run Docker containers # test라는 이름의 컴포즈 만든다. f는 경로 설정
+        run: docker-compose -f ./docker-compose.yml -p test up -d --build
 
       - name: Wait for Database
         run: docker-compose run app /bin/sh -c "while ! nc -z db 3306; do sleep 1; done"
