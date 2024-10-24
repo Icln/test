@@ -17,11 +17,11 @@ services:
       - --collation-server=utf8mb4_unicode_ci
 
   app:
-    build: ../docker
+    build:
+      dockerfile: ./docker/Dockerfile
     ports:
       - "8080:8080"
-    depends_on:
-      - db
+    depends_on: db
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/test-db
       SPRING_DATASOURCE_USERNAME: KH
