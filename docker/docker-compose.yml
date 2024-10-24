@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: test-db
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: test-db
+      MYSQL_USER: KH
+      MYSQL_PASSWORD: 0817
+      TZ: Asia/Seoul
+    ports:
+      - "13333:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on: db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/test-db
+      SPRING_DATASOURCE_USERNAME: KH
+      SPRING_DATASOURCE_PASSWORD: 0817
+

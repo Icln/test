@@ -1,4 +1,4 @@
-name: CI/CD Workflow
+name: CI/CD
 
 on:
   push:
@@ -12,6 +12,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      db:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: test
+          MYSQL_DATABASE: test-db
+          MYSQL_USER: KH
+          MYSQL_PASSWORD: 0817
+        ports:
+          - 3306:3306
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -19,8 +30,20 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '17' # 원하는 Java 버전
-          distribution: 'corretto' # JDK 배포판
+          java-version: '17'
+          distribution: 'corretto'
 
-      - name: Build with Gradle
-        run: ./gradlew build # Gradle 빌드 명령어
+      - name: Build and Test with Gradle
+        run: ./gradlew build
+
+      - name: Set up Docker Compose
+        run: docker-compose up -d --build
+
+      - name: Wait for Database
+        run: docker-compose run app /bin/sh -c "while ! nc -z db 3306; do sleep 1; done"
+
+      - name: Run Application Tests
+        run: docker-compose exec app ./gradlew test
+
+      - name: Shutdown Docker Compose
+        run: docker-compose down
