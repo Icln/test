@@ -43,7 +43,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y docker-compose
 
       - name: Build and run Docker containers # test라는 이름의 컴포즈 만든다. f는 경로 설정
-        run: docker-compose -f ./docker-compose.yml -p test up -d --build
+        run: docker-compose -f ./docker/docker-compose.yml -p test up -d --build
 
       - name: Wait for Database
         run: docker-compose run app /bin/sh -c "while ! nc -z db 3306; do sleep 1; done"
