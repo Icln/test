@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: mysql:8.0
-    container_name: test-db
+    container_name: test-database
     environment:
       MYSQL_ROOT_PASSWORD: test
       TZ: Asia/Seoul
