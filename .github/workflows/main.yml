@@ -24,12 +24,6 @@ jobs:
       - name: Build and Test with Gradle
         run: ./gradlew build
 
-      - name: Cache Docker Compose
-        uses: actions/cache@v3
-        with:
-          path: /usr/local/bin/docker-compose
-          key: ${{ runner.os }}-docker-compose-${{ hashFiles('**/Dockerfile') }}
-
       - name: Install Docker Compose
         run: sudo apt-get update && sudo apt-get install -y docker-compose
 
@@ -43,4 +37,4 @@ jobs:
         run: docker tag recent lcln/recent:latest
 
       - name: Push Docker image to Docker Hub
-        run: docker push your-dockerhub-username/your-image-name:latest
+        run: docker push lcln/recent:latest
