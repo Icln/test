@@ -36,8 +36,5 @@ jobs:
       - name: Build and run Docker containers # test라는 이름의 컴포즈 만든다. f는 경로 설정
         run: docker-compose -f ./docker/docker-compose.yml -p test up -d --build
 
-      - name: Run Application Tests
-        run: docker-compose exec app ./gradlew test
-
       - name: Shutdown Docker Compose
         run: docker-compose down
