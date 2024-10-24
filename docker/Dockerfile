@@ -1,6 +1,8 @@
 # 1. 베이스 이미지 설정
 FROM openjdk:17
 
+EXPOSE 8080
+
 # 2. 작업 디렉토리 생성
 WORKDIR /app
 
