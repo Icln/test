@@ -36,8 +36,8 @@ jobs:
       - name: Cache Docker Compose # 있으면 설치 안하도록
         uses: actions/cache@v3
         with:
-        path: /usr/local/bin/docker-compose
-        key: ${{ runner.os }}-docker-compose-${{ hashFiles('**/Dockerfile') }}
+          path: /usr/local/bin/docker-compose
+          key: ${{ runner.os }}-docker-compose-${{ hashFiles('**/Dockerfile') }}
 
       - name: Install Docker Compose # 도커 컴포즈 설치 캐시에서 없으면
         run: sudo apt-get update && sudo apt-get install -y docker-compose
