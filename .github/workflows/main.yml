@@ -5,10 +5,8 @@ on:
     branches:
       - main
       - dev
-  pull_request:
-    branches:
-      - main
-      - dev
+    tags:
+      - '*'  # 모든 태그 푸시 시에도 트리거
 
 jobs:
   build:
@@ -26,13 +24,21 @@ jobs:
       - name: Build and Test with Gradle
         run: ./gradlew build
 
-
-      - name: Build Docker images
-        run:  docker build -t "${{ secrets.DOCKER_USERNAME }}"/new:${{ github.sha }} -f ./docker/Dockerfile .
+      - name: Determine Docker Tag
+        id: docker_tag
+        run: |
+          if [ "${{ github.event_name }}" == "push" ] && [ -n "${{ github.ref_name }}" ]; then
+            echo "DOCKER_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
+          else
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            echo "DOCKER_TAG=${SHORT_SHA}" >> $GITHUB_ENV
+          fi
 
       - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_ID }}" --password-stdin
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker images
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}/new:${{ env.DOCKER_TAG }}" -f ./docker/Dockerfile .
 
       - name: Push to Docker Hub
-        run: docker push lcln/new:${{ github.sha }}
-
+        run: docker push "${{ secrets.DOCKER_USERNAME }}/new:${{ env.DOCKER_TAG }}"
