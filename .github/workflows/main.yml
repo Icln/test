@@ -25,7 +25,6 @@ jobs:
         run: ./gradlew build
 
       - name: Determine Docker Tag
-        id: docker_tag
         run: |
           if [ "${{ github.event_name }}" == "push" ] && [ -n "${{ github.ref_name }}" ]; then
             echo "DOCKER_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
