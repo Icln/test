@@ -1,3 +1,4 @@
+# 태그 버전 관리 스크립트
 
 # 현재 디렉토리에서 version.txt 파일이 존재하는지 확인
 if [ ! -f version.txt ]; then
