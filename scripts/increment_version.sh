@@ -1,32 +1,24 @@
-# 태그 버전 관리 스크립트
+# 버전 파일 경로 설정
+VERSION_FILE="./version.txt"
 
-# 현재 디렉토리에서 version.txt 파일이 존재하는지 확인
-if [ ! -f version.txt ]; then
-  echo "1.0" > version.txt  # 파일이 없으면 초기 버전 1.0 설정
+# 기존 버전 읽기
+if [ -f "$VERSION_FILE" ]; then
+    CURRENT_VERSION=$(cat "$VERSION_FILE")
+else
+    CURRENT_VERSION="1.0.0"  # 버전 파일이 없을 경우 기본 버전
 fi
 
-# 현재 버전 읽기
-VERSION=$(cat version.txt)
-
-# 버전 분해
-IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
-
-# 브랜치 이름 확인
-BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-
-if [ "$BRANCH_NAME" == "dev" ]; then
-  # dev 브랜치일 때, 패치 버전 증가
-  PATCH=$((PATCH + 1))
-elif [ "$BRANCH_NAME" == "main" ]; then
-  # main 브랜치일 때, 마이너 버전 증가
-  MINOR=$((MINOR + 1))
-  PATCH=0  # 패치 버전은 0으로 리셋
+# GITHUB_REF 환경 변수에서 브랜치 확인
+if [[ "$GITHUB_REF" == "refs/heads/dev" ]]; then
+    # 개발 브랜치에 머지할 때 소수점 증가
+    NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. -v OFS=. '{$NF++;print}')
+else
+    # 메인 브랜치에 머지할 때 주 버전 증가
+    NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. -v OFS=. '{$1++;$2=0;$3=0;print}')
 fi
 
-# 새 버전 저장
-NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-echo $NEW_VERSION > version.txt
+# 새로운 버전 파일에 기록
+echo "$NEW_VERSION" > "$VERSION_FILE"
 
-# Git 태그 추가
-git tag "$NEW_VERSION"
-git push origin "$NEW_VERSION"
+# 새로운 버전 출력
+echo "$NEW_VERSION"
