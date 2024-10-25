@@ -31,7 +31,8 @@ jobs:
         run: |
           chmod +x ./scripts/increment_version.sh
           NEW_VERSION=$(./scripts/increment_version.sh)
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
 
       - name: Build Docker images
         run: docker build -t lcln/recent:${{ env.NEW_VERSION }} -f ./docker/Dockerfile .
