@@ -29,7 +29,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker images
-        run: docker build -t "${{ secrets.DOCKER_USERNAME }}/app:${{ github.sha }} -f ./docker/Dockerfile .
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}/app:${{ github.sha }}" -f ./docker/Dockerfile .
 
       - name: Push to Docker Hub
-        run: docker push "${{ secrets.DOCKER_USERNAME }}/app:${{ github.sha }}
+        run: docker push "${{ secrets.DOCKER_USERNAME }}/app:${{ github.sha }}"
