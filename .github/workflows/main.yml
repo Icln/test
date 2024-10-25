@@ -26,16 +26,16 @@ jobs:
       #- name: Build and Test with Gradle
       #  run: ./gradlew build
 
-      - name: Increment version
-        id: increment_version
-        run: |
-          chmod +x ./scripts/increment_version.sh
-          NEW_VERSION=$(./scripts/increment_version.sh)
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+#      - name: Increment version
+#        id: increment_version
+#        run: |
+#          chmod +x ./scripts/increment_version.sh
+#          NEW_VERSION=$(./scripts/increment_version.sh)
+#          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
 
       - name: Build Docker images
-        run: docker build -t lcln/new:latest -f ./docker/Dockerfile .
+        run: docker build -t lcln/recent:latest -f ./docker/Dockerfile .
 
       #build -t lcln/recent:latest -f ./docker/Dockerfile .
 
@@ -43,5 +43,5 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_ID }}" --password-stdin
 
       - name: Push to Docker Hub
-        run: docker push lcln/new:latest
+        run: docker push lcln/recent:latest
 
