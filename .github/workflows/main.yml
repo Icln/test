@@ -5,9 +5,10 @@ on:
     branches:
       - main
       - dev
-    tags:
-      - '*'
-
+  pull_request:
+    branches:
+      - main
+      - dev
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,45 +25,11 @@ jobs:
       - name: Build and Test with Gradle
         run: ./gradlew build
 
-      - name: Determine Docker Tag
-        id: determine_tag
-        run: |
-          # 최신 태그를 가져옵니다. 없으면 기본으로 v0.0.0 설정
-          LATEST_TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
-          echo "Latest Tag: $LATEST_TAG"
-          
-          # 태그에서 버전 번호 추출
-          VERSION_NUMBER=$(echo $LATEST_TAG | sed 's/v//' | awk -F. '{print $1 "." $2 "." $3}')
-          MAJOR=$(echo $VERSION_NUMBER | cut -d. -f1)
-          MINOR=$(echo $VERSION_NUMBER | cut -d. -f2)
-          
-          # 현재 브랜치에 따른 버전 증가
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            # main 브랜치로 머지되면 메이저 버전 증가
-            MAJOR=$((MAJOR + 1))
-            MINOR=0
-            NEW_VERSION="${MAJOR}.0"
-            VERSION_PREFIX="v"
-          elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
-            # dev 브랜치로 머지되면 마이크로 버전 증가
-            MINOR=$((MINOR + 1))
-            NEW_VERSION="${MAJOR}.${MINOR}"
-            VERSION_PREFIX="v"
-          else
-            # 다른 브랜치는 SHA로 태그
-            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-            NEW_VERSION="${MAJOR}.${MINOR}-${SHORT_SHA}"
-          fi
-
-          # Docker 태그 설정
-          DOCKER_TAG="${VERSION_PREFIX}${NEW_VERSION}"
-          echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
-
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker images
-        run: docker build -t "${{ secrets.DOCKER_USERNAME }}/new:${{ env.DOCKER_TAG }}" -f ./docker/Dockerfile .
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}/app:${{ github.sha }} -f ./docker/Dockerfile .
 
       - name: Push to Docker Hub
-        run: docker push "${{ secrets.DOCKER_USERNAME }}/new:${{ env.DOCKER_TAG }}"
+        run: docker push "${{ secrets.DOCKER_USERNAME }}/app:${{ github.sha }}
