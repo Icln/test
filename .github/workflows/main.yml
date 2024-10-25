@@ -23,8 +23,8 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
-      #- name: Build and Test with Gradle
-      #  run: ./gradlew build
+      - name: Build and Test with Gradle
+        run: ./gradlew build
 
 #      - name: Increment version
 #        id: increment_version
@@ -35,7 +35,7 @@ jobs:
 
 
       - name: Build Docker images
-        run: DOCKER_BUILDKIT=0 docker build -t lcln/recent:latest -f ./docker/Dockerfile .
+        run:  docker build -t lcln/recent:latest -f ./docker/Dockerfile .
 
       #build -t lcln/recent:latest -f ./docker/Dockerfile .
 
