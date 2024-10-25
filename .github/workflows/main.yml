@@ -33,9 +33,6 @@ jobs:
           NEW_VERSION=$(./scripts/increment_version.sh)
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
-      - name: Set up Docker Build Context
-        run: echo "${{ secrets.DOCKER_USERNAME }}"
-
       - name: Build Docker images
         run:  docker build -t "${{ secrets.DOCKER_USERNAME }}"/new:${{ env.NEW_VERSION }} -f ./docker/Dockerfile .
 

@@ -18,7 +18,7 @@ else
 fi
 
 # 새로운 버전 파일에 기록
-echo "$NEW_VERSION" > "$VERSION_FILE"
+echo "$NEW_VERSION" > "version.txt"
 
 # 새로운 버전 출력
 echo "$NEW_VERSION"
