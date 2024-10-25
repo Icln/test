@@ -2,7 +2,7 @@
 
 # 현재 디렉토리에서 version.txt 파일이 존재하는지 확인
 if [ ! -f version.txt ]; then
-  echo "2.0" > version.txt  # 파일이 없으면 초기 버전 1.0 설정
+  echo "3.0" > version.txt  # 파일이 없으면 초기 버전 1.0 설정
 fi
 
 # 현재 버전 읽기
